@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DALCOM | الطلبات</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- استدعاء ملف المنطق المشترك -->
+    <script src="dalcom-logic.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .sidebar-item-active {
+            background-color: #ede9fe;
+            color: #6d28d9;
+            border-right: 4px solid #7c3aed;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn-active {
+            background-color: #7c3aed;
+            color: white;
+        }
+        
+        .filter-btn-inactive {
+            background-color: transparent;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+        .filter-btn-inactive:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <div class="flex h-screen overflow-hidden bg-gray-50">
+
+        <!-- Sidebar (Desktop) -->
+        <aside class="hidden md:flex flex-col w-64 bg-white border-l border-gray-100 h-full fixed top-0 right-0 z-30">
+            <!-- Logo -->
+            <div class="flex items-center justify-center h-20 border-b border-gray-100">
+                <h1 class="text-3xl font-extrabold text-brand-600 tracking-wider">DALCOM</h1>
+            </div>
+
+            <!-- User Mini Profile -->
+            <div class="p-4 border-b border-gray-50">
+                <div class="bg-brand-50 rounded-xl p-3 flex items-center gap-3">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Amjad" alt="User" class="w-10 h-10 rounded-full bg-white border border-gray-200">
+                    <div>
+                        <p class="text-sm font-bold text-gray-800">عبد الكريم الحربي</p>
+                        <p class="text-xs text-gray-500">البعثة الهندية</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-2">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-solid fa-border-all text-lg w-6 text-center"></i>
+                    لوحة التحكم
+                </a>
+                <a href="requests.html" class="sidebar-item-active flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-envelope text-lg w-6 text-center"></i>
+                    الطلبات
+                </a>
+                <a href="properties.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-building text-lg w-6 text-center"></i>
+                    العقارات
+                </a>
+                <a href="contracts.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-file-lines text-lg w-6 text-center"></i>
+                    العقود
+                </a>
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-solid fa-gear text-lg w-6 text-center"></i>
+                    الإعدادات
+                </a>
+            </nav>
+
+            <!-- Logout -->
+            <div class="p-4 border-t border-gray-100">
+                <button class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-500 rounded-lg hover:bg-red-50 w-full transition-colors">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col md:mr-64 h-full overflow-hidden transition-all duration-300">
+            
+            <!-- Top Header -->
+            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 sm:px-8 z-20 sticky top-0">
+                <button onclick="document.getElementById('mobile-sidebar').classList.toggle('translate-x-full')" class="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+
+                <!-- Search (Generic Header Search) -->
+                <div class="hidden md:flex relative w-96">
+                    <input type="text" placeholder="عن ماذا تبحث؟" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 block p-3 pr-10 outline-none transition-all">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fa-solid fa-search text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <button class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center hover:bg-brand-100 transition-colors relative">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="absolute top-2 left-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="text-left hidden sm:block">
+                            <p class="text-sm font-bold text-gray-800">أمجد سليمان</p>
+                            <p class="text-xs text-gray-500">مدير النظام</p>
+                        </div>
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Area -->
+            <div id="content-area" class="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 relative">
+                
+                <!-- Page Header -->
+                <div class="flex flex-col sm:flex-row justify-between items-end gap-4 mb-2">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">الطلبات</h2>
+                        <p class="text-gray-500 mt-1">تابع الطلبات المستقبلة من الملاك</p>
+                    </div>
+                </div>
+
+                <!-- Filters & Local Search -->
+                <div class="flex flex-col lg:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                    <!-- Local Search -->
+                    <div class="relative w-full lg:w-96">
+                        <input type="text" id="requests-search" placeholder="تبحث عن طلب ما؟" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 block p-3 pr-10 outline-none transition-all">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
+                            <i class="fa-solid fa-filter"></i>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex gap-2 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0">
+                        <button onclick="filterRequests('all')" id="btn-all" class="filter-btn-active px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap">الكل</button>
+                        <button onclick="filterRequests('approved')" id="btn-approved" class="filter-btn-inactive px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap">تم الموافقة عليها</button>
+                        <button onclick="filterRequests('pending')" id="btn-pending" class="filter-btn-inactive px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap">معلقة</button>
+                        <button onclick="filterRequests('rejected')" id="btn-rejected" class="filter-btn-inactive px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap">مرفوضة</button>
+                    </div>
+                </div>
+
+                <!-- Requests Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="requests-grid">
+                    <!-- Populated via JS -->
+                </div>
+
+                <br><br>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div id="mobile-sidebar" class="fixed top-0 right-0 w-64 h-full bg-white z-50 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col shadow-2xl">
+        <div class="p-4 flex justify-between items-center border-b">
+            <h1 class="text-2xl font-extrabold text-brand-600">DALCOM</h1>
+            <button onclick="document.getElementById('mobile-sidebar').classList.add('translate-x-full')" class="text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">لوحة التحكم</a>
+            <a href="requests.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg">الطلبات</a>
+            <a href="properties.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">العقارات</a>
+            <a href="contracts.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">العقود</a>
+            <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">الإعدادات</a>
+        </nav>
+    </div>
+
+    <script>
+        let allProperties = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load Data
+            allProperties = getData('dalcom_properties');
+            
+            // Add fake status for demonstration purposes since raw data doesn't have it
+            // This ensures the filter buttons actually do something visually
+            allProperties = allProperties.map((prop, index) => {
+                let status = 'pending';
+                if (index % 3 === 0) status = 'approved';
+                else if (index % 3 === 1) status = 'rejected';
+                return { ...prop, requestStatus: status };
+            });
+
+            // Initial Render
+            renderGrid(allProperties);
+
+            // Search Listener
+            document.getElementById('requests-search').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = allProperties.filter(p => p.name.toLowerCase().includes(term) || p.owner.toLowerCase().includes(term));
+                renderGrid(filtered);
+            });
+        });
+
+        function renderGrid(properties) {
+            const grid = document.getElementById('requests-grid');
+            
+            if(properties.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-400">لا توجد طلبات مطابقة</div>`;
+                return;
+            }
+
+            grid.innerHTML = properties.map(prop => `
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden card-hover flex flex-col relative group">
+                    <div class="relative h-40">
+                        <img src="${prop.image}" class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-brand-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                            متوافق ${prop.match}%
+                        </span>
+                        <!-- Status Badge (Visual Only) -->
+                        <span class="absolute top-3 right-3 text-xs font-bold px-2 py-1 rounded text-white ${getStatusColor(prop.requestStatus)}">
+                             ${getStatusText(prop.requestStatus)}
+                        </span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-brand-600">${prop.name}</h3>
+                            <span class="text-sm font-bold text-gray-800">${prop.distance} كيلو</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 mb-4">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${prop.owner}" class="w-6 h-6 rounded-full bg-gray-100">
+                            <span class="text-sm text-gray-600">${prop.owner}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-y-2 text-xs text-gray-500 mb-4 border-t border-b border-gray-50 py-3">
+                            <div>الترخيص: <span class="text-gray-800 font-mono">${prop.license}</span></div>
+                            <div class="text-left">السعة: <span class="text-gray-800 font-bold">${prop.capacity} حاج</span></div>
+                            <div>عدد الغرف: <span class="text-gray-800">${prop.rooms} غرفة</span></div>
+                        </div>
+
+                        <a href="property-details.html?id=${prop.id}" class="w-full mt-auto bg-brand-600 text-white py-2.5 rounded-xl font-medium hover:bg-brand-700 transition flex items-center justify-center gap-2 text-sm">
+                            تعرف أكثر <i class="fa-solid fa-angles-left text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterRequests(status) {
+            // Update Buttons UI
+            const buttons = ['all', 'approved', 'pending', 'rejected'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`btn-${btn}`);
+                if(btn === status) {
+                    el.classList.remove('filter-btn-inactive');
+                    el.classList.add('filter-btn-active');
+                } else {
+                    el.classList.add('filter-btn-inactive');
+                    el.classList.remove('filter-btn-active');
+                }
+            });
+
+            // Filter Data
+            if (status === 'all') {
+                renderGrid(allProperties);
+            } else {
+                const filtered = allProperties.filter(p => p.requestStatus === status);
+                renderGrid(filtered);
+            }
+        }
+
+        function getStatusColor(status) {
+            if(status === 'approved') return 'bg-green-500';
+            if(status === 'rejected') return 'bg-red-500';
+            return 'bg-orange-400';
+        }
+
+        function getStatusText(status) {
+            if(status === 'approved') return 'مقبول';
+            if(status === 'rejected') return 'مرفوض';
+            return 'معلق';
+        }
+    </script>
+</body>
+</html>
