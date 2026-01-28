@@ -61,7 +61,7 @@
         }
         .tab-btn:not(.active) {
             color: #4b5563;
-            background-color: transparent;
+            background-color: #f3f4f6;
         }
         .tab-btn:not(.active):hover {
             color: #7c3aed;
@@ -70,8 +70,17 @@
 
         /* Services Icons Grid Styling */
         .service-item i {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Smooth Fade In */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -166,29 +175,33 @@
             <!-- Scrollable Content Area -->
             <div id="content-area" class="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 relative">
                 
-                <!-- Back Button & Header -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                    <div class="flex items-center gap-4">
-                        <a href="properties.html" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 hover:bg-gray-50 transition text-gray-600">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                        <div>
-                            <h2 class="text-2xl font-bold text-gray-800" id="prop-name">...</h2>
-                            <p class="text-gray-500 text-sm">شقق مخدومة</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex gap-3">
-                        <button class="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 flex items-center gap-2 shadow-sm">
-                            تواصل مع المالك <i class="fa-brands fa-whatsapp text-green-500 text-lg"></i>
-                        </button>
-                        <button class="px-6 py-2.5 bg-brand-600 text-white font-bold rounded-xl hover:bg-brand-700 flex items-center gap-2 shadow-lg shadow-brand-200">
+                <!-- Header (Title & Actions) -->
+                <div class="flex flex-col-reverse md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <!-- Left Action (Accept Order) -->
+                    <div>
+                        <button class="bg-brand-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-brand-700 transition flex items-center gap-3 shadow-lg shadow-brand-200">
                             قبول الطلب <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
+
+                    <!-- Right Info -->
+                    <div class="flex items-center gap-4 text-right">
+                        <div class="flex flex-col items-end">
+                            <div class="flex items-center gap-3">
+                                <a href="#" class="text-orange-500 font-bold text-sm flex items-center gap-1 hover:underline">
+                                    تواصل مع المالك <i class="fa-solid fa-chevron-left text-xs"></i>
+                                </a>
+                                <h2 class="text-3xl font-extrabold text-gray-800" id="prop-name">...</h2>
+                            </div>
+                            <p class="text-gray-500 font-medium">شقق مخدومة</p>
+                        </div>
+                        <a href="properties.html" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-gray-50 hover:bg-gray-100 transition text-gray-400">
+                            <i class="fa-solid fa-arrow-right text-xl"></i>
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Gallery -->
+                <!-- Gallery Grid (Auto Height Fixed) -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <!-- Main Image -->
                     <div class="md:col-span-2 h-64 md:h-96">
@@ -202,132 +215,247 @@
                         <div class="flex-1 relative cursor-pointer group rounded-2xl overflow-hidden shadow-sm">
                             <img id="prop-img-3" src="" class="absolute inset-0 w-full h-full object-cover transition group-hover:brightness-75">
                             <div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition">
-                                <p class="text-white font-bold text-xs md:text-lg text-center px-2">شاهد أكثر من +15 صورة</p>
+                                <p class="text-white font-bold text-xs md:text-lg text-center px-2">شاهد أكثر من +15 صورة للخدمات والمرافق</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Tabs Navigation -->
-                <div class="bg-brand-50 p-1.5 rounded-xl flex overflow-x-auto gap-2 mb-6 relative z-10">
-                    <button onclick="switchTab('info')" id="tab-btn-info" class="tab-btn active px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">معلومات العقار</button>
-                    <button onclick="switchTab('services')" id="tab-btn-services" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">الخدمات</button>
-                    <button onclick="switchTab('pricing')" id="tab-btn-pricing" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">الإتاحة والتسعير</button>
-                    <button onclick="switchTab('photos')" id="tab-btn-photos" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">الصور والمرفقات</button>
-                    <button onclick="switchTab('owner')" id="tab-btn-owner" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">معلومات المالك</button>
+                <div class="flex overflow-x-auto gap-2 mb-8 border-b border-gray-100 pb-1 relative z-10">
+                    <button onclick="switchTab('info')" id="tab-btn-info" class="tab-btn active px-6 py-3 text-sm rounded-t-lg whitespace-nowrap">معلومات العقار</button>
+                    <button onclick="switchTab('services')" id="tab-btn-services" class="tab-btn px-6 py-3 text-sm rounded-t-lg whitespace-nowrap">الخدمات</button>
+                    <button onclick="switchTab('pricing')" id="tab-btn-pricing" class="tab-btn px-6 py-3 text-sm rounded-t-lg whitespace-nowrap">الإتاحة والتسعير</button>
+                    <button onclick="switchTab('photos')" id="tab-btn-photos" class="tab-btn px-6 py-3 text-sm rounded-t-lg whitespace-nowrap">الصور والمرفقات</button>
+                    <button onclick="switchTab('owner')" id="tab-btn-owner" class="tab-btn px-6 py-3 text-sm rounded-t-lg whitespace-nowrap">معلومات المالك</button>
                 </div>
 
                 <!-- Tab Content: Property Info -->
                 <div id="tab-info" class="tab-content py-4 animate-fade-in">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 text-center">
-                        <div class="flex flex-col items-center gap-2">
-                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-regular fa-user"></i></div>
-                            <h3 class="text-xl font-bold text-brand-600" id="info-capacity">--</h3>
-                            <p class="text-gray-500 text-xs">الطاقة الاستيعابية</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-12 gap-x-8 text-center">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-regular fa-user"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600" id="info-capacity">--</h3>
+                            <p class="text-gray-500 text-sm">الطاقة الاستيعابية</p>
                         </div>
-                        <div class="flex flex-col items-center gap-2">
-                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-bed"></i></div>
-                            <h3 class="text-xl font-bold text-brand-600" id="info-units">--</h3>
-                            <p class="text-gray-500 text-xs">عدد الوحدات (الشقق)</p>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-solid fa-bed"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600" id="info-units">--</h3>
+                            <p class="text-gray-500 text-sm">عدد الوحدات (الشقق)</p>
                         </div>
-                        <div class="flex flex-col items-center gap-2">
-                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-house-chimney"></i></div>
-                            <h3 class="text-xl font-bold text-brand-600">ثنائية، ثلاثية</h3>
-                            <p class="text-gray-500 text-xs">أنواع الغرف</p>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-solid fa-house-chimney"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">ثنائية، ثلاثية</h3>
+                            <p class="text-gray-500 text-sm">أنواع الغرف (ثنائية، ثلاثية.. إلخ)</p>
                         </div>
-                        <div class="flex flex-col items-center gap-2">
-                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-regular fa-building"></i></div>
-                            <h3 class="text-xl font-bold text-brand-600" id="info-floors">--</h3>
-                            <p class="text-gray-500 text-xs">عدد الأدوار</p>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-regular fa-building"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600" id="info-floors">--</h3>
+                            <p class="text-gray-500 text-sm">عدد الأدوار (الطوابق)</p>
                         </div>
-                        <div class="flex flex-col items-center gap-2">
-                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-elevator"></i></div>
-                            <h3 class="text-xl font-bold text-brand-600">مصعدان</h3>
-                            <p class="text-gray-500 text-xs">المصاعد</p>
+                        
+                        <!-- Row 2 -->
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-solid fa-elevator"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">مصعدان</h3>
+                            <p class="text-gray-500 text-sm">المصاعد</p>
                         </div>
-                        <div class="flex flex-col items-center gap-2">
-                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-utensils"></i></div>
-                            <h3 class="text-xl font-bold text-brand-600">100 مقعد</h3>
-                            <p class="text-gray-500 text-xs">طاولات المطعم</p>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-solid fa-utensils"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">25 طاولة / 100 مقعد</h3>
+                            <p class="text-gray-500 text-sm">طاولات المطعم؟</p>
                         </div>
-                        <div class="flex flex-col items-center gap-2">
-                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-toilet"></i></div>
-                            <h3 class="text-xl font-bold text-brand-600">16 حمام</h3>
-                            <p class="text-gray-500 text-xs">حمامات مشتركة</p>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-solid fa-toilet"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">16 حمام مشترك</h3>
+                            <p class="text-gray-500 text-sm">الحمامات المشتركة</p>
                         </div>
-                        <div class="flex flex-col items-center gap-2">
-                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-bath"></i></div>
-                            <h3 class="text-xl font-bold text-brand-600">16 حمام</h3>
-                            <p class="text-gray-500 text-xs">حمامات داخلية</p>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-solid fa-bath"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">16 حمام داخلي</h3>
+                            <p class="text-gray-500 text-sm">الحمامات الداخلية</p>
+                        </div>
+
+                        <!-- Specific Rooms -->
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-solid fa-person-shelter"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">65 غرفة ثلاثية</h3>
+                            <p class="text-gray-500 text-sm">الغرف الثلاثية</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-4xl"><i class="fa-solid fa-person-booth"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">35 غرفة ثنائية</h3>
+                            <p class="text-gray-500 text-sm">الغرف الثنائية</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Tab Content: Services -->
                 <div id="tab-services" class="tab-content py-4 hidden animate-fade-in">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 text-center service-item">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-12 gap-x-8 text-center service-item">
                         <div class="flex flex-col items-center">
                             <i class="fa-solid fa-wifi text-red-500"></i>
-                            <h3 class="text-lg font-bold text-red-500">لا يتوفر واي فاي</h3>
-                            <p class="text-gray-400 text-xs">الإنترنت</p>
+                            <h3 class="text-xl font-bold text-red-500">لا يتوفر واي فاي</h3>
+                            <p class="text-gray-400 text-sm">الطاقة الاستيعابية</p>
                         </div>
                         <div class="flex flex-col items-center">
                             <i class="fa-solid fa-shower text-brand-600"></i>
-                            <h3 class="text-lg font-bold text-brand-600">متوفرة</h3>
-                            <p class="text-gray-400 text-xs">المياه الساخنة</p>
+                            <h3 class="text-xl font-bold text-brand-600">متوفرة</h3>
+                            <p class="text-gray-400 text-sm">المياه الساخنة</p>
                         </div>
                         <div class="flex flex-col items-center">
                             <i class="fa-solid fa-kitchen-set text-brand-600"></i>
-                            <h3 class="text-lg font-bold text-brand-600">مطبخ / بانتري</h3>
-                            <p class="text-gray-400 text-xs">المطبخ</p>
+                            <h3 class="text-xl font-bold text-brand-600">64 وحدة سكنية</h3>
+                            <p class="text-gray-400 text-sm">مطبخ / بانتري</p>
                         </div>
                         <div class="flex flex-col items-center">
                             <i class="fa-solid fa-fan text-brand-600"></i>
-                            <h3 class="text-lg font-bold text-brand-600">سبليت</h3>
-                            <p class="text-gray-400 text-xs">التكييف</p>
+                            <h3 class="text-xl font-bold text-brand-600">سبليت</h3>
+                            <p class="text-gray-400 text-sm">التكييف</p>
                         </div>
                          <div class="flex flex-col items-center">
                             <i class="fa-solid fa-bell-concierge text-red-500"></i>
-                            <h3 class="text-lg font-bold text-red-500">لا يتوفر استقبال</h3>
-                            <p class="text-gray-400 text-xs">الاستقبال</p>
+                            <h3 class="text-xl font-bold text-red-500">لا يتوفر استقبال</h3>
+                            <p class="text-gray-400 text-sm">هل يتوفر استقبال؟</p>
                         </div>
                          <div class="flex flex-col items-center">
                             <i class="fa-solid fa-square-parking text-brand-600"></i>
-                            <h3 class="text-lg font-bold text-brand-600">متوفر موقف</h3>
-                            <p class="text-gray-400 text-xs">المواقف</p>
+                            <h3 class="text-xl font-bold text-brand-600">متوفر موقف سيارات</h3>
+                            <p class="text-gray-400 text-sm">هل يتوفر موقف سيارات؟</p>
                         </div>
                         <div class="flex flex-col items-center">
                             <i class="fa-solid fa-broom text-brand-600"></i>
-                            <h3 class="text-lg font-bold text-brand-600">كل يومين</h3>
-                            <p class="text-gray-400 text-xs">دورة النظافة</p>
+                            <h3 class="text-xl font-bold text-brand-600">كل يومين</h3>
+                            <p class="text-gray-400 text-sm">دورة النظافة</p>
                         </div>
                         <div class="flex flex-col items-center">
                             <i class="fa-solid fa-jug-detergent text-brand-600"></i>
-                            <h3 class="text-lg font-bold text-brand-600">يتوفر غسيل</h3>
-                            <p class="text-gray-400 text-xs">الخدمات</p>
+                            <h3 class="text-xl font-bold text-brand-600">يتوفر غسيل</h3>
+                            <p class="text-gray-400 text-sm">دراي كلين - غسيل</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-bus text-brand-600"></i>
+                            <h3 class="text-xl font-bold text-brand-600">الحرم، المشاعر</h3>
+                            <p class="text-gray-400 text-sm">النقل</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-bowl-food text-brand-600"></i>
+                            <h3 class="text-xl font-bold text-brand-600">غداء، عشاء</h3>
+                            <p class="text-gray-400 text-sm">الإعاشة</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Tab Content: Pricing -->
-                <div id="tab-pricing" class="tab-content hidden py-10 text-center text-gray-500">
-                    <i class="fa-solid fa-tag text-4xl mb-4 text-gray-300"></i>
-                    <p>تفاصيل الأسعار والإتاحة ستظهر هنا</p>
+                <div id="tab-pricing" class="tab-content hidden py-4 animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mt-8">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-5xl mb-2"><i class="fa-solid fa-kaaba"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">مواسم الحج فقط</h3>
+                            <p class="text-gray-500">المواسم المتاحة</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-5xl mb-2"><i class="fa-solid fa-key"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">أسبوعين</h3>
+                            <p class="text-gray-500">الحد الأدنى للتعاقد</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="text-brand-600 text-5xl mb-2"><i class="fa-solid fa-wallet"></i></div>
+                            <h3 class="text-2xl font-bold text-brand-600">10000 ريال</h3>
+                            <p class="text-gray-500">مبلغ الإيجار للأسبوع الواحد</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tab Content: Photos -->
-                <div id="tab-photos" class="tab-content hidden py-10 text-center text-gray-500">
-                    <i class="fa-solid fa-images text-4xl mb-4 text-gray-300"></i>
-                    <p>معرض الصور والمرفقات</p>
+                <div id="tab-photos" class="tab-content hidden py-4 animate-fade-in">
+                    <!-- Section: Double Rooms -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4 border-b pb-2">
+                            <h3 class="text-xl font-bold text-gray-800">الغرف الثنائية</h3>
+                            <span class="text-sm text-gray-500">6 صور</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                            <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                            <img src="https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                        </div>
+                    </div>
+                    
+                    <!-- Section: Triple Rooms -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4 border-b pb-2">
+                            <h3 class="text-xl font-bold text-gray-800">الغرف الثلاثية</h3>
+                            <span class="text-sm text-gray-500">صورة</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <img src="https://images.unsplash.com/photo-1596191763784-90a6c221226c?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Section: Reception -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4 border-b pb-2">
+                            <h3 class="text-xl font-bold text-gray-800">الإستقبال</h3>
+                            <span class="text-sm text-gray-500">8 صور</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                            <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                            <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=300" class="rounded-lg h-32 w-full object-cover">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tab Content: Owner -->
-                <div id="tab-owner" class="tab-content hidden py-10 text-center text-gray-500">
-                    <i class="fa-solid fa-user-tie text-4xl mb-4 text-gray-300"></i>
-                    <p>بيانات المالك: <span id="owner-name" class="font-bold text-gray-700"></span></p>
+                <div id="tab-owner" class="tab-content hidden py-4 animate-fade-in">
+                    <!-- Owner Card -->
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+                        <div class="flex items-center gap-4">
+                            <img id="owner-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Owner" class="w-16 h-16 rounded-full bg-gray-100 border border-gray-200 p-1">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800" id="owner-name-tab">ماجد النجار</h3>
+                                <p class="text-gray-500 text-sm">شركة ارك وافي للتطوير العقاري <span class="bg-brand-100 text-brand-700 px-2 py-0.5 rounded text-xs mr-2">موثق</span></p>
+                            </div>
+                        </div>
+                        <button class="bg-brand-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-brand-700 transition">
+                            زيارة الصفحة الشخصية <i class="fa-solid fa-angles-left text-xs mr-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                            <h4 class="text-2xl font-bold text-gray-800">كل العقارات</h4>
+                            <p class="text-4xl font-extrabold text-brand-600 my-2">6</p>
+                            <span class="text-gray-400 text-xs">عقار</span>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                            <h4 class="text-2xl font-bold text-gray-800">عقارات متاحة</h4>
+                            <p class="text-4xl font-extrabold text-brand-600 my-2">3</p>
+                            <span class="text-gray-400 text-xs">عقار</span>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                            <h4 class="text-2xl font-bold text-gray-800">عقارات متطابقة</h4>
+                            <p class="text-4xl font-extrabold text-brand-600 my-2">2</p>
+                            <span class="text-gray-400 text-xs">عقارات</span>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                            <h4 class="text-2xl font-bold text-gray-800">معاملات سابقة</h4>
+                            <p class="text-4xl font-extrabold text-brand-600 my-2">16</p>
+                            <span class="text-gray-400 text-xs">معاملة</span>
+                        </div>
+                    </div>
                 </div>
 
                 <br><br>
+                <!-- Whatsapp Floating Button -->
+                <a href="#" class="fixed bottom-6 left-6 z-50 bg-green-500 text-white w-14 h-14 rounded-full shadow-lg hover:bg-green-600 transition-colors flex items-center justify-center group">
+                    <i class="fa-brands fa-whatsapp text-3xl"></i>
+                    <span class="absolute left-full ml-3 bg-white text-green-600 px-3 py-1 rounded-lg text-sm font-bold shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden md:block">دعم فني مباشر</span>
+                </a>
             </div>
         </main>
     </div>
@@ -354,33 +482,32 @@
             const propId = urlParams.get('id');
 
             if (!propId) {
-                document.getElementById('content-area').innerHTML = '<div class="text-center py-20 text-red-500 font-bold">لم يتم تحديد عقار!</div>';
-                return;
+                // If no ID, redirect or show error (for demo, just load first prop logic if fails)
+                // document.getElementById('content-area').innerHTML = '<div class="text-center py-20 text-red-500 font-bold">لم يتم تحديد عقار!</div>';
             }
 
             // 2. Find Property Data
             const properties = getData('dalcom_properties');
-            const prop = properties.find(p => p.id == propId);
+            // Default to first property if ID not found for demo purposes
+            const prop = properties.find(p => p.id == propId) || properties[0];
 
-            if (!prop) {
-                document.getElementById('content-area').innerHTML = '<div class="text-center py-20 text-gray-500 font-bold">العقار غير موجود.</div>';
-                return;
+            if (prop) {
+                // 3. Populate Page
+                document.getElementById('prop-name').innerText = prop.name;
+                document.getElementById('owner-name-tab').innerText = prop.owner;
+                document.getElementById('owner-img').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${prop.owner}`;
+                
+                // Info Grid
+                document.getElementById('info-capacity').innerText = prop.capacity + ' حاج';
+                document.getElementById('info-units').innerText = (prop.units || 64) + ' وحدة سكنية';
+                document.getElementById('info-floors').innerText = (prop.floors || 16) + ' طابق';
+
+                // Images
+                const images = prop.images && prop.images.length > 0 ? prop.images : [prop.image, prop.image, prop.image];
+                document.getElementById('prop-img-main').src = images[0];
+                document.getElementById('prop-img-2').src = images[1] || images[0];
+                document.getElementById('prop-img-3').src = images[2] || images[0];
             }
-
-            // 3. Populate Page
-            document.getElementById('prop-name').innerText = prop.name;
-            document.getElementById('owner-name').innerText = prop.owner;
-            
-            // Info Grid
-            document.getElementById('info-capacity').innerText = prop.capacity + ' حاج';
-            document.getElementById('info-units').innerText = (prop.units || 64) + ' وحدة سكنية';
-            document.getElementById('info-floors').innerText = (prop.floors || 16) + ' طابق';
-
-            // Images
-            const images = prop.images && prop.images.length > 0 ? prop.images : [prop.image, prop.image, prop.image];
-            document.getElementById('prop-img-main').src = images[0];
-            document.getElementById('prop-img-2').src = images[1] || images[0];
-            document.getElementById('prop-img-3').src = images[2] || images[0];
         });
 
         // Tab Switching Logic
