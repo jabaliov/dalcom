@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DALCOM | العقارات</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet CSS (For the Map) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- استدعاء ملف المنطق المشترك -->
+    <script src="dalcom-logic.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .sidebar-item-active {
+            background-color: #ede9fe;
+            color: #6d28d9;
+            border-right: 4px solid #7c3aed;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Map Container */
+        #map {
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+            border-radius: 1rem;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            font-family: 'Tajawal', sans-serif;
+            border-radius: 0.5rem;
+            text-align: right;
+        }
+
+        .filter-btn-active {
+            background-color: #7c3aed; /* brand-600 */
+            color: white;
+            border-color: #7c3aed;
+        }
+        
+        .filter-btn-inactive {
+            background-color: white;
+            color: #4b5563; /* gray-600 */
+            border-color: #e5e7eb; /* gray-200 */
+        }
+        .filter-btn-inactive:hover {
+            background-color: #f3f4f6; /* gray-50 */
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <div class="flex h-screen overflow-hidden bg-gray-50">
+
+        <!-- Sidebar (Desktop) -->
+        <aside class="hidden md:flex flex-col w-64 bg-white border-l border-gray-100 h-full fixed top-0 right-0 z-30">
+            <!-- Logo -->
+            <div class="flex items-center justify-center h-20 border-b border-gray-100">
+                <h1 class="text-3xl font-extrabold text-brand-600 tracking-wider">DALCOM</h1>
+            </div>
+
+            <!-- User Mini Profile -->
+            <div class="p-4 border-b border-gray-50">
+                <div class="bg-brand-50 rounded-xl p-3 flex items-center gap-3">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Amjad" alt="User" class="w-10 h-10 rounded-full bg-white border border-gray-200">
+                    <div>
+                        <p class="text-sm font-bold text-gray-800">عبد الكريم الحربي</p>
+                        <p class="text-xs text-gray-500">البعثة الهندية</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-2">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-solid fa-border-all text-lg w-6 text-center"></i>
+                    لوحة التحكم
+                </a>
+                <a href="requests.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-envelope text-lg w-6 text-center"></i>
+                    الطلبات
+                </a>
+                <a href="properties.html" class="sidebar-item-active flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-building text-lg w-6 text-center"></i>
+                    العقارات
+                </a>
+                <a href="contracts.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-file-lines text-lg w-6 text-center"></i>
+                    العقود
+                </a>
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-solid fa-gear text-lg w-6 text-center"></i>
+                    الإعدادات
+                </a>
+            </nav>
+
+            <!-- Logout -->
+            <div class="p-4 border-t border-gray-100">
+                <button class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-500 rounded-lg hover:bg-red-50 w-full transition-colors">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col md:mr-64 h-full overflow-hidden transition-all duration-300">
+            
+            <!-- Top Header -->
+            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 sm:px-8 z-20 sticky top-0">
+                <button onclick="document.getElementById('mobile-sidebar').classList.toggle('translate-x-full')" class="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+
+                <!-- Search -->
+                <div class="hidden md:flex relative w-96">
+                    <input type="text" placeholder="عن ماذا تبحث؟" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 block p-3 pr-10 outline-none transition-all">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fa-solid fa-search text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <button class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center hover:bg-brand-100 transition-colors relative">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="absolute top-2 left-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="text-left hidden sm:block">
+                            <p class="text-sm font-bold text-gray-800">أمجد سليمان</p>
+                            <p class="text-xs text-gray-500">مدير النظام</p>
+                        </div>
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Area -->
+            <div id="content-area" class="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 relative">
+                
+                <!-- Page Title & Filters -->
+                <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">العقارات</h2>
+                        <p class="text-gray-500 mt-1">تعرف على أنسب العقارات القريبة من الحرم</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <!-- Dropdown Filter -->
+                        <div class="relative">
+                            <select class="appearance-none bg-brand-50 border border-transparent text-brand-700 py-2.5 px-4 pr-8 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option>حسب الحرم المكي</option>
+                                <option>حسب الحرم المدني</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2 text-brand-700">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Buttons Filter -->
+                        <button onclick="filterProperties('all')" id="btn-all" class="filter-btn-active border px-5 py-2.5 rounded-xl text-sm font-bold transition-all">الكل</button>
+                        <button onclick="filterProperties('match')" id="btn-match" class="filter-btn-inactive border px-5 py-2.5 rounded-xl text-sm font-bold transition-all">المتوافقة</button>
+                        <button onclick="filterProperties('capacity')" id="btn-capacity" class="filter-btn-inactive border px-5 py-2.5 rounded-xl text-sm font-bold transition-all">حسب السعة</button>
+                    </div>
+                </div>
+
+                <!-- Big Map Section -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-[300px] sm:h-[400px] relative w-full">
+                     <div id="map"></div>
+                     <!-- Map Overlay Info (Optional style) -->
+                     <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm z-[1000] border border-gray-200">
+                        <i class="fa-solid fa-map-location-dot text-brand-600 ml-1"></i>
+                        مكة المكرمة
+                     </div>
+                </div>
+
+                <h3 class="font-bold text-xl text-gray-800 mt-4">عقارات مقترحة</h3>
+
+                <!-- Properties Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="properties-grid">
+                    <!-- Populated via JS -->
+                </div>
+
+                <br><br>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div id="mobile-sidebar" class="fixed top-0 right-0 w-64 h-full bg-white z-50 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col shadow-2xl">
+        <div class="p-4 flex justify-between items-center border-b">
+            <h1 class="text-2xl font-extrabold text-brand-600">DALCOM</h1>
+            <button onclick="document.getElementById('mobile-sidebar').classList.add('translate-x-full')" class="text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">لوحة التحكم</a>
+            <a href="requests.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">الطلبات</a>
+            <a href="properties.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg">العقارات</a>
+            <a href="contracts.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">العقود</a>
+            <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">الإعدادات</a>
+        </nav>
+    </div>
+
+    <script>
+        let allProperties = [];
+        let map;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load Data
+            allProperties = getData('dalcom_properties');
+            
+            // Initial Render
+            renderGrid(allProperties);
+            initMap(allProperties);
+        });
+
+        function renderGrid(properties) {
+            const grid = document.getElementById('properties-grid');
+            
+            if(properties.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-400">لا توجد عقارات مطابقة</div>`;
+                return;
+            }
+
+            grid.innerHTML = properties.map(prop => `
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden card-hover flex flex-col relative group">
+                    <div class="relative h-40">
+                        <img src="${prop.image}" class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-brand-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                            متوافق ${prop.match}%
+                        </span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-brand-600">${prop.name}</h3>
+                            <span class="text-sm font-bold text-gray-800">${prop.distance} كيلو</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 mb-4">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${prop.owner}" class="w-6 h-6 rounded-full bg-gray-100">
+                            <span class="text-sm text-gray-600">${prop.owner}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-y-2 text-xs text-gray-500 mb-4 border-t border-b border-gray-50 py-3">
+                            <div>الترخيص: <span class="text-gray-800 font-mono">${prop.license}</span></div>
+                            <div class="text-left">السعة: <span class="text-gray-800 font-bold">${prop.capacity} حاج</span></div>
+                            <div>عدد الغرف: <span class="text-gray-800">${prop.rooms} غرفة</span></div>
+                        </div>
+
+                        <a href="property-details.html?id=${prop.id}" class="w-full mt-auto bg-brand-600 text-white py-2.5 rounded-xl font-medium hover:bg-brand-700 transition flex items-center justify-center gap-2 text-sm">
+                            تعرف أكثر <i class="fa-solid fa-angles-left text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProperties(type) {
+            // Update Buttons UI
+            ['all', 'match', 'capacity'].forEach(btn => {
+                const el = document.getElementById(`btn-${btn}`);
+                if(btn === type) {
+                    el.classList.remove('filter-btn-inactive');
+                    el.classList.add('filter-btn-active');
+                } else {
+                    el.classList.add('filter-btn-inactive');
+                    el.classList.remove('filter-btn-active');
+                }
+            });
+
+            // Filter Logic
+            let filtered = [...allProperties];
+            if (type === 'match') {
+                filtered = allProperties.filter(p => p.match >= 80);
+            } else if (type === 'capacity') {
+                filtered = allProperties.sort((a, b) => b.capacity - a.capacity);
+            }
+            renderGrid(filtered);
+        }
+
+        function initMap(properties) {
+            if(map) map.remove();
+
+            map = L.map('map').setView([21.4225, 39.8261], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            properties.forEach(prop => {
+                const marker = L.marker([prop.lat, prop.lng]).addTo(map);
+                marker.bindPopup(`
+                    <div style="text-align: right; min-width: 150px;">
+                        <img src="${prop.image}" style="width:100%; height:80px; object-fit:cover; border-radius:4px; margin-bottom:5px;">
+                        <b style="color:#6d28d9">${prop.name}</b><br>
+                        <span style="font-size:11px; color:#666">المالك: ${prop.owner}</span><br>
+                        <a href="property-details.html?id=${prop.id}" style="font-size:11px;">التفاصيل</a>
+                    </div>
+                `);
+            });
+
+            setTimeout(() => { map.invalidateSize(); }, 200);
+        }
+    </script>
+</body>
+</html>
