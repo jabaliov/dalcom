@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DALCOM | تفاصيل العقار</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- استدعاء ملف المنطق المشترك -->
+    <script src="dalcom-logic.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .sidebar-item-active {
+            background-color: #ede9fe;
+            color: #6d28d9;
+            border-right: 4px solid #7c3aed;
+        }
+
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #7c3aed; /* brand-600 */
+            color: white;
+            font-weight: bold;
+        }
+        .tab-btn:not(.active) {
+            color: #4b5563;
+            background-color: transparent;
+        }
+        .tab-btn:not(.active):hover {
+            color: #7c3aed;
+            background-color: #ede9fe;
+        }
+
+        /* Services Icons Grid Styling */
+        .service-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <div class="flex h-screen overflow-hidden bg-gray-50">
+
+        <!-- Sidebar (Desktop) -->
+        <aside class="hidden md:flex flex-col w-64 bg-white border-l border-gray-100 h-full fixed top-0 right-0 z-30">
+            <!-- Logo -->
+            <div class="flex items-center justify-center h-20 border-b border-gray-100">
+                <h1 class="text-3xl font-extrabold text-brand-600 tracking-wider">DALCOM</h1>
+            </div>
+
+            <!-- User Mini Profile -->
+            <div class="p-4 border-b border-gray-50">
+                <div class="bg-brand-50 rounded-xl p-3 flex items-center gap-3">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Amjad" alt="User" class="w-10 h-10 rounded-full bg-white border border-gray-200">
+                    <div>
+                        <p class="text-sm font-bold text-gray-800">عبد الكريم الحربي</p>
+                        <p class="text-xs text-gray-500">البعثة الهندية</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-2">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-solid fa-border-all text-lg w-6 text-center"></i>
+                    لوحة التحكم
+                </a>
+                <a href="requests.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-envelope text-lg w-6 text-center"></i>
+                    الطلبات
+                </a>
+                <a href="properties.html" class="sidebar-item-active flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-building text-lg w-6 text-center"></i>
+                    العقارات
+                </a>
+                <a href="contracts.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-regular fa-file-lines text-lg w-6 text-center"></i>
+                    العقود
+                </a>
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg transition-colors hover:bg-gray-50">
+                    <i class="fa-solid fa-gear text-lg w-6 text-center"></i>
+                    الإعدادات
+                </a>
+            </nav>
+
+            <!-- Logout -->
+            <div class="p-4 border-t border-gray-100">
+                <button class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-500 rounded-lg hover:bg-red-50 w-full transition-colors">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col md:mr-64 h-full overflow-hidden transition-all duration-300">
+            
+            <!-- Top Header -->
+            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 sm:px-8 z-20 sticky top-0">
+                <button onclick="document.getElementById('mobile-sidebar').classList.toggle('translate-x-full')" class="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+
+                <!-- Search -->
+                <div class="hidden md:flex relative w-96">
+                    <input type="text" placeholder="عن ماذا تبحث؟" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 block p-3 pr-10 outline-none transition-all">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fa-solid fa-search text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <button class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center hover:bg-brand-100 transition-colors relative">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="absolute top-2 left-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="text-left hidden sm:block">
+                            <p class="text-sm font-bold text-gray-800">أمجد سليمان</p>
+                            <p class="text-xs text-gray-500">مدير النظام</p>
+                        </div>
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Area -->
+            <div id="content-area" class="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 relative">
+                
+                <!-- Back Button & Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                    <div class="flex items-center gap-4">
+                        <a href="properties.html" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 hover:bg-gray-50 transition text-gray-600">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800" id="prop-name">...</h2>
+                            <p class="text-gray-500 text-sm">شقق مخدومة</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <button class="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 flex items-center gap-2 shadow-sm">
+                            تواصل مع المالك <i class="fa-brands fa-whatsapp text-green-500 text-lg"></i>
+                        </button>
+                        <button class="px-6 py-2.5 bg-brand-600 text-white font-bold rounded-xl hover:bg-brand-700 flex items-center gap-2 shadow-lg shadow-brand-200">
+                            قبول الطلب <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gallery -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-auto md:h-96 mb-6">
+                    <!-- Main Image -->
+                    <div class="md:col-span-2 h-64 md:h-full">
+                        <img id="prop-img-main" src="" class="w-full h-full object-cover rounded-2xl shadow-sm">
+                    </div>
+                    <!-- Side Images -->
+                    <div class="flex flex-row md:flex-col gap-4 h-32 md:h-full">
+                        <div class="w-1/2 md:w-full h-full md:h-1/2 relative">
+                            <img id="prop-img-2" src="" class="w-full h-full object-cover rounded-2xl shadow-sm">
+                        </div>
+                        <div class="relative w-1/2 md:w-full h-full md:h-1/2 cursor-pointer group">
+                            <img id="prop-img-3" src="" class="w-full h-full object-cover rounded-2xl shadow-sm transition group-hover:brightness-75">
+                            <div class="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center group-hover:bg-black/50 transition">
+                                <p class="text-white font-bold text-xs md:text-lg text-center px-2">شاهد أكثر من +15 صورة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="bg-brand-50 p-1.5 rounded-xl flex overflow-x-auto gap-2 mb-6">
+                    <button onclick="switchTab('info')" id="tab-btn-info" class="tab-btn active px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">معلومات العقار</button>
+                    <button onclick="switchTab('services')" id="tab-btn-services" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">الخدمات</button>
+                    <button onclick="switchTab('pricing')" id="tab-btn-pricing" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">الإتاحة والتسعير</button>
+                    <button onclick="switchTab('photos')" id="tab-btn-photos" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">الصور والمرفقات</button>
+                    <button onclick="switchTab('owner')" id="tab-btn-owner" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">معلومات المالك</button>
+                </div>
+
+                <!-- Tab Content: Property Info -->
+                <div id="tab-info" class="tab-content py-4 animate-fade-in">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 text-center">
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-regular fa-user"></i></div>
+                            <h3 class="text-xl font-bold text-brand-600" id="info-capacity">--</h3>
+                            <p class="text-gray-500 text-xs">الطاقة الاستيعابية</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-bed"></i></div>
+                            <h3 class="text-xl font-bold text-brand-600" id="info-units">--</h3>
+                            <p class="text-gray-500 text-xs">عدد الوحدات (الشقق)</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-house-chimney"></i></div>
+                            <h3 class="text-xl font-bold text-brand-600">ثنائية، ثلاثية</h3>
+                            <p class="text-gray-500 text-xs">أنواع الغرف</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-regular fa-building"></i></div>
+                            <h3 class="text-xl font-bold text-brand-600" id="info-floors">--</h3>
+                            <p class="text-gray-500 text-xs">عدد الأدوار</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-elevator"></i></div>
+                            <h3 class="text-xl font-bold text-brand-600">مصعدان</h3>
+                            <p class="text-gray-500 text-xs">المصاعد</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-utensils"></i></div>
+                            <h3 class="text-xl font-bold text-brand-600">100 مقعد</h3>
+                            <p class="text-gray-500 text-xs">طاولات المطعم</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-toilet"></i></div>
+                            <h3 class="text-xl font-bold text-brand-600">16 حمام</h3>
+                            <p class="text-gray-500 text-xs">حمامات مشتركة</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-brand-600 text-3xl mb-1"><i class="fa-solid fa-bath"></i></div>
+                            <h3 class="text-xl font-bold text-brand-600">16 حمام</h3>
+                            <p class="text-gray-500 text-xs">حمامات داخلية</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Services -->
+                <div id="tab-services" class="tab-content py-4 hidden animate-fade-in">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 text-center service-item">
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-wifi text-red-500"></i>
+                            <h3 class="text-lg font-bold text-red-500">لا يتوفر واي فاي</h3>
+                            <p class="text-gray-400 text-xs">الإنترنت</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-shower text-brand-600"></i>
+                            <h3 class="text-lg font-bold text-brand-600">متوفرة</h3>
+                            <p class="text-gray-400 text-xs">المياه الساخنة</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-kitchen-set text-brand-600"></i>
+                            <h3 class="text-lg font-bold text-brand-600">مطبخ / بانتري</h3>
+                            <p class="text-gray-400 text-xs">المطبخ</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-fan text-brand-600"></i>
+                            <h3 class="text-lg font-bold text-brand-600">سبليت</h3>
+                            <p class="text-gray-400 text-xs">التكييف</p>
+                        </div>
+                         <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-bell-concierge text-red-500"></i>
+                            <h3 class="text-lg font-bold text-red-500">لا يتوفر استقبال</h3>
+                            <p class="text-gray-400 text-xs">الاستقبال</p>
+                        </div>
+                         <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-square-parking text-brand-600"></i>
+                            <h3 class="text-lg font-bold text-brand-600">متوفر موقف</h3>
+                            <p class="text-gray-400 text-xs">المواقف</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-broom text-brand-600"></i>
+                            <h3 class="text-lg font-bold text-brand-600">كل يومين</h3>
+                            <p class="text-gray-400 text-xs">دورة النظافة</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-jug-detergent text-brand-600"></i>
+                            <h3 class="text-lg font-bold text-brand-600">يتوفر غسيل</h3>
+                            <p class="text-gray-400 text-xs">الخدمات</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Pricing -->
+                <div id="tab-pricing" class="tab-content hidden py-10 text-center text-gray-500">
+                    <i class="fa-solid fa-tag text-4xl mb-4 text-gray-300"></i>
+                    <p>تفاصيل الأسعار والإتاحة ستظهر هنا</p>
+                </div>
+
+                <!-- Tab Content: Photos -->
+                <div id="tab-photos" class="tab-content hidden py-10 text-center text-gray-500">
+                    <i class="fa-solid fa-images text-4xl mb-4 text-gray-300"></i>
+                    <p>معرض الصور والمرفقات</p>
+                </div>
+
+                <!-- Tab Content: Owner -->
+                <div id="tab-owner" class="tab-content hidden py-10 text-center text-gray-500">
+                    <i class="fa-solid fa-user-tie text-4xl mb-4 text-gray-300"></i>
+                    <p>بيانات المالك: <span id="owner-name" class="font-bold text-gray-700"></span></p>
+                </div>
+
+                <br><br>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div id="mobile-sidebar" class="fixed top-0 right-0 w-64 h-full bg-white z-50 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col shadow-2xl">
+        <div class="p-4 flex justify-between items-center border-b">
+            <h1 class="text-2xl font-extrabold text-brand-600">DALCOM</h1>
+            <button onclick="document.getElementById('mobile-sidebar').classList.add('translate-x-full')" class="text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">لوحة التحكم</a>
+            <a href="requests.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">الطلبات</a>
+            <a href="properties.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">العقارات</a>
+            <a href="contracts.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">العقود</a>
+            <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 rounded-lg">الإعدادات</a>
+        </nav>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Get Property ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const propId = urlParams.get('id');
+
+            if (!propId) {
+                document.getElementById('content-area').innerHTML = '<div class="text-center py-20 text-red-500 font-bold">لم يتم تحديد عقار!</div>';
+                return;
+            }
+
+            // 2. Find Property Data
+            const properties = getData('dalcom_properties');
+            const prop = properties.find(p => p.id == propId);
+
+            if (!prop) {
+                document.getElementById('content-area').innerHTML = '<div class="text-center py-20 text-gray-500 font-bold">العقار غير موجود.</div>';
+                return;
+            }
+
+            // 3. Populate Page
+            document.getElementById('prop-name').innerText = prop.name;
+            document.getElementById('owner-name').innerText = prop.owner;
+            
+            // Info Grid
+            document.getElementById('info-capacity').innerText = prop.capacity + ' حاج';
+            document.getElementById('info-units').innerText = (prop.units || 64) + ' وحدة سكنية';
+            document.getElementById('info-floors').innerText = (prop.floors || 16) + ' طابق';
+
+            // Images
+            const images = prop.images && prop.images.length > 0 ? prop.images : [prop.image, prop.image, prop.image];
+            document.getElementById('prop-img-main').src = images[0];
+            document.getElementById('prop-img-2').src = images[1] || images[0];
+            document.getElementById('prop-img-3').src = images[2] || images[0];
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Show selected tab
+            const target = document.getElementById(`tab-${tabId}`);
+            if(target) target.classList.remove('hidden');
+
+            // Update Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-btn-${tabId}`).classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
