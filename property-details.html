@@ -189,19 +189,19 @@
                 </div>
 
                 <!-- Gallery -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-auto md:h-96 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <!-- Main Image -->
-                    <div class="md:col-span-2 h-64 md:h-full">
+                    <div class="md:col-span-2 h-64 md:h-96">
                         <img id="prop-img-main" src="" class="w-full h-full object-cover rounded-2xl shadow-sm">
                     </div>
                     <!-- Side Images -->
-                    <div class="flex flex-row md:flex-col gap-4 h-32 md:h-full">
-                        <div class="w-1/2 md:w-full h-full md:h-1/2 relative">
-                            <img id="prop-img-2" src="" class="w-full h-full object-cover rounded-2xl shadow-sm">
+                    <div class="flex flex-row md:flex-col gap-4 h-32 md:h-96">
+                        <div class="flex-1 relative rounded-2xl overflow-hidden shadow-sm">
+                            <img id="prop-img-2" src="" class="absolute inset-0 w-full h-full object-cover">
                         </div>
-                        <div class="relative w-1/2 md:w-full h-full md:h-1/2 cursor-pointer group">
-                            <img id="prop-img-3" src="" class="w-full h-full object-cover rounded-2xl shadow-sm transition group-hover:brightness-75">
-                            <div class="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center group-hover:bg-black/50 transition">
+                        <div class="flex-1 relative cursor-pointer group rounded-2xl overflow-hidden shadow-sm">
+                            <img id="prop-img-3" src="" class="absolute inset-0 w-full h-full object-cover transition group-hover:brightness-75">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition">
                                 <p class="text-white font-bold text-xs md:text-lg text-center px-2">شاهد أكثر من +15 صورة</p>
                             </div>
                         </div>
@@ -209,7 +209,7 @@
                 </div>
 
                 <!-- Tabs Navigation -->
-                <div class="bg-brand-50 p-1.5 rounded-xl flex overflow-x-auto gap-2 mb-6">
+                <div class="bg-brand-50 p-1.5 rounded-xl flex overflow-x-auto gap-2 mb-6 relative z-10">
                     <button onclick="switchTab('info')" id="tab-btn-info" class="tab-btn active px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">معلومات العقار</button>
                     <button onclick="switchTab('services')" id="tab-btn-services" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">الخدمات</button>
                     <button onclick="switchTab('pricing')" id="tab-btn-pricing" class="tab-btn px-6 py-2.5 text-sm rounded-lg flex-1 whitespace-nowrap">الإتاحة والتسعير</button>
